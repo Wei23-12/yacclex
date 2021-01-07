@@ -9,7 +9,7 @@ calc > 4**2
 
 for-loop:
 calc > i=0
-calc > for i<10 i=i+1
+calc > for i 1 range 10 i=i+1
 calc > i
  
 if-else:
