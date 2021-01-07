@@ -9,6 +9,11 @@ reserved = {
     'if' : 'IF',
     'else' : 'ELSE',
     'for' : 'FOR',
+    'range'   : 'RANGE',
+    'area' : 'AREA',
+    'triangle' : 'TRIANGLE',
+    'square'   : 'SQUARE'
+    
     
 }
 
@@ -85,6 +90,19 @@ precedence = (
 
 names = {}
 
+def p_statement_area(p):
+    '''statement    : AREA NAME NUMBER NUMBER TRIANGLE
+                    | AREA NAME NUMBER NUMBER SQUARE '''
+    sum=0
+    
+    if p[5]=='triangle':
+       sum= p[3]*p[4]/2
+    elif p[5]=='square':
+        sum= p[3]*p[4]
+        
+    names[p[2]]=sum
+       
+
 
 def p_statement_if(p):
     '''statement    : IF comparison NAME EQUALS expression
@@ -92,29 +110,28 @@ def p_statement_if(p):
 
     if p[2]:
         names[p[3]] = p[5]
-    elif not p[3]:
+    elif not p[2]:
         if p[6] is not None:
             names[p[7]]=p[9]
 
 
 def p_statement_for(p):
-    '''statement : FOR NAME SMALL NUMBER NAME EQUALS expression PLUS  expression
-                 | FOR NAME SMALL NUMBER NAME EQUALS expression MINUS expression '''
+    '''statement : FOR NAME NUMBER RANGE NUMBER NAME EQUALS expression PLUS  expression
+                 | FOR NAME NUMBER RANGE NUMBER NAME EQUALS expression MINUS  expression'''
                 
-
-    t1 = p[7]
-    t2 = p[9]
+    t1 = p[8]
+    t2 = p[10]
     sum=0
 
-    for i in range(0,p[4]+1):
-       if p[8]=='+':
+    for i in range(p[3],p[5]+1):
+       if p[9]=='+':
           sum = t1 + t2
           t1 = sum 
-       elif p[8]=='-':
+       elif p[9]=='-':
           sum = t1 - t2
           t1 = sum
 
-    names[p[5]] = t1
+    names[p[2]] = t1
 
 
 
@@ -129,7 +146,7 @@ def p_statement_expr(p):
     print(p[1])
 
 
-# comparison
+
 def p_comparison_binop(p):
     '''comparison : expression EQUAL expression
                           | expression NOTEQ expression
@@ -249,7 +266,7 @@ while True:
     yacc.parse(s)  
     
     
-    prio_dict = {'-':1,'+':2,'*':3,'/':4,'**':5,'^':6}
+    prio_dict = {'-':1,'+':2,'':3,'/':4,'*':5,'^':6}
     op_lst = []
     op_lst.append(['op','arg1','arg2','result'])
 
@@ -282,4 +299,3 @@ while True:
    
 
       i += 1
-
